@@ -8,6 +8,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -40,6 +41,7 @@ export default function LoginScreen() {
 
       <TextInput
         placeholder="Email"
+        placeholderTextColor="black"
         autoCapitalize="none"
         keyboardType="email-address"
         style={styles.input}
@@ -49,23 +51,30 @@ export default function LoginScreen() {
 
       <TextInput
         placeholder="Password"
+        placeholderTextColor="black"
         secureTextEntry
         style={styles.input}
         value={password}
         onChangeText={setPassword}
       />
+      <View style={styles.buttonRow}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleLogin}
+          disabled={loading}
+        >
+          <Text style={styles.buttonText}>
+            {loading ? "Logging in..." : "Login"}
+          </Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleLogin}
-        disabled={loading}
-      >
-        <Text style="">{loading ? "Logging in..." : "Login"}</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.button} onPress={() => router.push("/signup")}>
-        <Text style="">Signup</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push("/signup")}
+        >
+          <Text style={styles.buttonText}>Signup</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
@@ -75,30 +84,40 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     padding: 16,
-    backgroundColor: 'white',
-    alignItems: 'center',
+    backgroundColor: "white",
+    alignItems: "center",
   },
   input: {
-    borderWidth: 1,
-    borderColor: 'black',
+    borderWidth: 2,
+    borderColor: "black",
     padding: 12,
-    marginBottom: 12,
-    borderRadius: 8,
-    color: 'black',
-    width: '60%',
+    marginBottom: 14,
+    borderRadius: 12,
+    color: "black",
+    width: "60%",
+  },
+  buttonRow: {
+    flexDirection: "row",
+    gap: 12,
+    marginTop: 8,
   },
   button: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 12,
-    borderRadius: 8,
+    borderRadius: 30,
     alignItems: "center",
     marginTop: 8,
-    borderColor: 'black',
+    borderColor: "black",
+    borderWidth: 2,
+  },
+  buttonText: {
+    padding: 2,
+    fontWeight: 500,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 700,
     marginBottom: 24,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });

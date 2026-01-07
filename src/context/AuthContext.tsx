@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 
-type UserRole = 'admin' | 'student' | null;
+type UserRole = "admin" | "student" | null;
 
 type AuthContextType = {
   user: User | null;
@@ -39,13 +39,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       setUser(firebaseUser);
 
-      const userDocRef = doc(db, 'users', firebaseUser.uid);
+      const userDocRef = doc(db, "users", firebaseUser.uid);
       const userDoc = await getDoc(userDocRef);
 
       if (userDoc.exists()) {
         setRole(userDoc.data().role);
       } else {
-        setRole('student')
+        setRole("student");
       }
 
       setLoading(false);
