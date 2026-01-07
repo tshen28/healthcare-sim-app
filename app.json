@@ -2,6 +2,7 @@
   "expo": {
     "name": "healthcare-sim-app",
     "slug": "healthcare-sim-app",
+    "scheme": "healthcaresim",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
