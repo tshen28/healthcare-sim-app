@@ -11,7 +11,7 @@ import {
 
 type UserRole = "admin" | "student" | null;
 
-type AuthContextType = {
+export interface AuthContextType {
   user: User | null;
   role: UserRole;
   loading: boolean;

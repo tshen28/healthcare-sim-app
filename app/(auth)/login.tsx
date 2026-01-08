@@ -4,10 +4,10 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
   Alert,
+  Pressable,
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -58,7 +58,7 @@ export default function LoginScreen() {
         onChangeText={setPassword}
       />
       <View style={styles.buttonRow}>
-        <TouchableOpacity
+        <Pressable
           style={styles.button}
           onPress={handleLogin}
           disabled={loading}
@@ -66,14 +66,14 @@ export default function LoginScreen() {
           <Text style={styles.buttonText}>
             {loading ? "Logging in..." : "Login"}
           </Text>
-        </TouchableOpacity>
+        </Pressable>
 
-        <TouchableOpacity
+        <Pressable
           style={styles.button}
           onPress={() => router.push("/signup")}
         >
           <Text style={styles.buttonText}>Signup</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </SafeAreaView>
   );

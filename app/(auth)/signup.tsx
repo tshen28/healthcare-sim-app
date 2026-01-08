@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 700,
     marginBottom: 24,
-    textAlign: "center",
+    textAlign: "left",
   },
   label: {
     marginBottom: 8,
