@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 interface Props {
   title: string;
@@ -15,17 +15,21 @@ export default function SimulationCard({
   onPress,
 }: Props) {
   return (
-    <View>
-      <Pressable
-        style={[styles.card, locked && styles.locked]}
-        onPress={onPress}
-        disabled={locked}
-      >
+    <Pressable
+      style={({pressed}) => [
+        styles.card, 
+        locked && styles.locked,
+        pressed && !locked && styles.pressed
+      ]}
+      onPress={onPress}
+      disabled={locked}
+    >
+      <View>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.description}>{description}</Text>
         {locked && <Text style={styles.lockText}>Locked</Text>}
-      </Pressable>
-    </View>
+      </View>
+    </Pressable>
   );
 }
 
@@ -39,6 +43,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 3,
+  },
+  pressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.98 }],
   },
   locked: {
     opacity: 0.5,
