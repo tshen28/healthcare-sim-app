@@ -51,3 +51,4 @@ node_modules/
 .expo/
 firebaseConfig.js
 .env
+*.swp
