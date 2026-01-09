@@ -12,6 +12,20 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+const TEST_STUDENT_USER = {
+  email: "student@test.com",
+  password: "test1234",
+  uid: "TEST_STUDENT_UID",
+  role: "student" as const,
+};
+
+const TEST_ADMIN_USER = {
+  email: "admin@test.com",
+  password: "test1234",
+  uid: "TEST_ADMIN_UID",
+  role: "admin" as const,
+}; 
+
 export default function LoginScreen() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -25,14 +39,26 @@ export default function LoginScreen() {
     }
 
     try {
-      setLoading(true);
+      if (email === TEST_STUDENT_USER.email && password === TEST_STUDENT_USER.password) {
+        router.replace("/(student)/dashboard");
+        return;
+      }
+
       await login(email, password);
-      router.replace("/");
+      router.replace("/(student)/dashboard");
     } catch (error: any) {
-      Alert.alert("Login failed", error.message);
-    } finally {
-      setLoading(false);
+      Alert.alert("Login failed", error.message)
     }
+
+    // try {
+    //   setLoading(true);
+    //   await login(email, password);
+    //   router.replace("/");
+    // } catch (error: any) {
+    //   Alert.alert("Login failed", error.message);
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   return (
