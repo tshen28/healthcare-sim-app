@@ -50,7 +50,7 @@ export default function SignupScreen() {
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
       >
-        <Text style={styles.title}>SIGNUP</Text>
+        <Text style={styles.title}>Create an Account</Text>
 
         <RoleSelector role={role} onSelect={setRole} />
 
@@ -82,10 +82,10 @@ export default function SignupScreen() {
           </Pressable>
 
           <Pressable
-            style={styles.button}
+            style={styles.cancelButton}
             onPress={() => router.push("/(auth)/login")}
           >
-            <Text style={styles.buttonText}>Cancel</Text>
+            <Text style={styles.cancelButtonText}>Cancel</Text>
           </Pressable>
         </View>
       </ScrollView>
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 700,
-    marginBottom: 24,
+    marginBottom: 18,
     textAlign: "left",
   },
   label: {
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     borderColor: "black",
     padding: 12,
     marginBottom: 14,
-    borderRadius: 12,
+    borderRadius: 30,
     color: "black",
     height: 48,
     paddingHorizontal: 12,
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end"
   },
   button: {
-    backgroundColor: "white",
+    backgroundColor: "black",
     padding: 12,
     borderRadius: 30,
     alignItems: "center",
@@ -142,8 +142,23 @@ const styles = StyleSheet.create({
   buttonText: {
     padding: 2,
     fontWeight: 500,
+    color: "white",
   },
   disabledButton: {
     opacity: 0.5,
+  },
+  cancelButton: {
+    backgroundColor: "white",
+    padding: 12,
+    borderRadius: 30,
+    alignItems: "center",
+    marginTop: 8,
+    borderColor: "black",
+    borderWidth: 2,
+  },
+  cancelButtonText: {
+    padding: 2,
+    fontWeight: 500,
+    color: "black",
   },
 });
