@@ -1,20 +1,32 @@
-import { getAnalytics } from "firebase/analytics";
-import { initializeApp } from "firebase/app";
+import { getApp, getApps, initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
+const EXPO_PUBLIC_FIREBASE_API_KEY = process.env.EXPO_PUBLIC_FIREBASE_API_KEY;
+const EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN =
+  process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN;
+const EXPO_PUBLIC_FIREBASE_PROJECT_ID =
+  process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID;
+const EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET =
+  process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET;
+const EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID =
+  process.env.EXPO_PUBLIC_MESSAGING_SENDER_ID;
+const EXPO_PUBLIC_FIREBASE_APP_ID = process.env.EXPO_PUBLIC_FIREBASE_APP_ID;
+const EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID = process.env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID;
+
 const firebaseConfig = {
-  apiKey: "AIzaSyBpVyo-9_47zr0_k17RVfQH-l-OMOZN0RY",
-  authDomain: "healthcare-sim-d2cce.firebaseapp.com",
-  projectId: "healthcare-sim-d2cce",
-  storageBucket: "healthcare-sim-d2cce.firebasestorage.app",
-  messagingSenderId: "880223810176",
-  appId: "1:880223810176:web:9cc000cfcc44a483dfec65",
-  measurementId: "G-9J4JPWN38N",
+  apiKey: EXPO_PUBLIC_FIREBASE_API_KEY,
+  authDomain: EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: EXPO_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: EXPO_PUBLIC_FIREBASE_APP_ID,
+  measurementId: EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-const app = initializeApp(firebaseConfig);
+const app = getApps().length
+  ? getApp()
+  : initializeApp(firebaseConfig);
 
-export const analytics = getAnalytics(app);
 export const auth = getAuth(app);
 export const db = getFirestore(app);

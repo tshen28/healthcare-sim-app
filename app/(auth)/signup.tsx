@@ -4,13 +4,13 @@ import { signup } from "@/src/services/auth.service";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
-    Alert,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
+  Alert,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -32,7 +32,12 @@ export default function SignupScreen() {
 
     try {
       await signup(role, email, password);
-      router.replace("/");
+      if (role === "admin") {
+        router.replace("/(admin)/dashboard");
+      }
+      if (role === "student") {
+        router.replace("/(student)/dashboard");
+      }
     } catch (error: any) {
       Alert.alert("Signup failed", error.message);
     } finally {

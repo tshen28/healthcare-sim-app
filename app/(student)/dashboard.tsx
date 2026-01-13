@@ -20,7 +20,6 @@ export default function StudentDashboard() {
   const currentUser = user || TEST_STUDENT_USER;
   const currentRole = role || TEST_STUDENT_USER.role;
   const [simulations] = useState(sampleSimulations);
-  console.log("sampleSimulations:", sampleSimulations);
   // useEffect(() => {
   //   if (!currentUser) return;
 
