@@ -21,9 +21,9 @@ export const sampleSimulations = [
   {
     id: "1",
     title: "Test Sim 1",
-    description: "This is a test simulation.",
+    description: "Patient details...",
     locked: false,
-    details: "Test details 1",
+    details: "Simulation details...",
   },
   {
     id: "2",
