@@ -1,54 +1,24 @@
-import React, { useState } from "react";
-import {
-  Alert,
-  Modal,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import EvilIcons from "@expo/vector-icons/EvilIcons";
+import { useRouter } from "expo-router";
+import React from "react";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 
 interface Props {
+  id: string;
   title: string;
   description: string;
-  locked: boolean;
-  details?: string;
-  onPress: () => void;
+  assignedTo?: string;
+  locked?: boolean;
 }
 
-export const sampleSimulations = [
-  {
-    id: "1",
-    title: "Test Sim 1",
-    description: "Patient details...",
-    locked: false,
-    details: "Simulation details...",
-  },
-  {
-    id: "2",
-    title: "Test Sim 2",
-    description: "Another test simulation.",
-    locked: true,
-    details: "Locked simulation.",
-  },
-];
-
-export default function SimulationCard({
-  title,
-  description,
-  locked,
-  details,
-  onPress,
-}: Props) {
-  const [showDetails, setShowDetails] = useState(false);
+export default function SimulationCard({ id, title, description, assignedTo, locked}: Props) {
+  const router = useRouter();
 
   const handlePress = () => {
     if (locked) {
-      Alert.alert("This simulation is locked")
+      Alert.alert("This simulation is locked");
     } else {
-      setShowDetails(true);
-      onPress();
+      router.push(`/simulation/${id}?assignedTo=${assignedTo}`);
     }
   };
 
@@ -57,66 +27,30 @@ export default function SimulationCard({
       <Pressable
         style={[styles.card, locked && styles.locked]}
         onPress={handlePress}
-        disabled={locked}
       >
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.description}>{description}</Text>
-        {locked && <Text style={styles.lockText}>Locked</Text>}
+        {locked && <EvilIcons name="lock" style={styles.lockIcon}></EvilIcons>}
       </Pressable>
-
-      <Modal visible={showDetails} animationType="fade" transparent={true}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <ScrollView>
-              <Text style={styles.modalTitle}>{title}</Text>
-              <Text style={styles.modalDescription}>{description}</Text>
-              <Text style={styles.modalDetails}>
-                {details || "No additional details."}
-              </Text>
-            </ScrollView>
-            <Pressable
-              style={styles.closeButton}
-              onPress={() => setShowDetails(false)}
-            >
-              <Text style={styles.closeButtonText}>Close</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
-    </View>
-  );
-}
-
-export function SimulationCardTest() {
-  return (
-    <View>
-      {sampleSimulations.map((sim) => (
-        <SimulationCard
-          key={sim.id}
-          title={sim.title}
-          description={sim.description}
-          locked={sim.locked}
-          details={sim.details}
-          onPress={() => console.log(`Clicked ${sim.title}`)}
-        />
-      ))}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "grey",
+    backgroundColor: "white",
     padding: 16,
-    borderRadius: 8,
+    borderRadius: 30,
     marginBottom: 12,
     shadowColor: "black",
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 3,
+    borderColor: "black",
+    borderWidth: 2,
   },
   locked: {
-    opacity: 0.5,
+    opacity: 0.7,
   },
   title: {
     fontWeight: "600",
@@ -124,12 +58,14 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   description: {
-    color: "grey",
+    color: "black",
   },
-  lockText: {
-    marginTop: 6,
-    color: "yellow",
-    fontWeight: "600",
+  lockIcon: {
+    position: "absolute",
+    right: 16,
+    top: "50%",
+    fontSize: 36,
+    color: "black",
   },
   modalContainer: {
     flex: 1,

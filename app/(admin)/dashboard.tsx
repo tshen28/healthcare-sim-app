@@ -1,10 +1,9 @@
 //route: "/admin/dashboard"
-import SimulationCard, {
-    sampleSimulations,
-} from "@/src/components/ui/SimulationCard";
+import SimulationCard from "@/src/components/ui/SimulationCard";
 import { useAuth } from "@/src/context/AuthContext";
+import { simulations } from "@/src/data/simulations";
 import { Redirect } from "expo-router";
-import React, { useState } from "react";
+import React from "react";
 import { ScrollView, StyleSheet, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -13,49 +12,22 @@ const TEST_ADMIN_USER = {
   password: "test1234",
   uid: "TEST_ADMIN_UID",
   role: "admin" as const,
-}; 
+};
 
 export default function AdminLayout() {
-     const { user, role, loading: authLoading } = useAuth();
+  const { user, role, loading: authLoading } = useAuth();
+  const currentUser = user || TEST_ADMIN_USER;
+  const currentRole = role || TEST_ADMIN_USER.role;
 
-      const currentUser = user || TEST_ADMIN_USER;
-      const currentRole = role || TEST_ADMIN_USER.role;
-      const [simulations] = useState(sampleSimulations);
-    
-      if (!currentUser) return null;
-      if (authLoading) return null;
-      if (currentRole !== "admin") {
-        return <Redirect href="/(auth)/login" />;
-      }
-    
-//   const { user, role, loading: authLoading } = useAuth();
-//   const [simulations, setSimulations] = useState<any[]>(
-//     sampleSimulations || []
-//   );
-//   const [loading, setLoading] = useState(true);
+  if (!currentUser) return null;
+  if (authLoading) return null;
+  if (currentRole !== "admin") {
+    return <Redirect href="/(auth)/login" />;
+  }
 
-//   const currentUser = user || TEST_ADMIN_USER;
-//   const currentRole = role || TEST_ADMIN_USER.role;
-  
-//   useEffect(() => {
-//     if (!currentUser) return;
-//     if (!authLoading) return;
-
-//     setSimulations(sampleSimulations);
-//     setLoading(false);
-
-//     getStudentSimulations(currentUser.uid)
-//     .then(setSimulations)
-//     .finally(() => setLoading(false));
-//   }, [currentUser, authLoading]);
-
-//   if (currentRole !== "admin") {
-//       return <Redirect href="/(auth)/login" />;
-//   }
-
-//   if (loading) {
-//     return <Text>Loading simulations...</Text>;
-//   }
+  const adminSims = simulations.filter(
+    (sim) => sim.assignedTo === "admin" || sim.assignedTo === "all"
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -66,15 +38,8 @@ export default function AdminLayout() {
         {!simulations || simulations.length === 0 ? (
           <Text>No simulations available.</Text>
         ) : (
-          simulations.map((sim) => (
-            <SimulationCard
-              key={sim.id}
-              title={sim.title}
-              description={sim.description}
-              locked={sim.locked}
-              details={sim.details}
-              onPress={() => console.log("Clicked simulation:", sim.id)}
-            />
+          adminSims.map((sim) => (
+            <SimulationCard key={sim.id} id={sim.id} title={sim.title} description={sim.description} assignedTo={sim.assignedTo} locked={sim.locked}/>
           ))
         )}
       </ScrollView>
