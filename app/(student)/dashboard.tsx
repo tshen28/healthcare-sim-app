@@ -1,8 +1,9 @@
 //route: "/dashboard"
-import SimulationCard, { sampleSimulations } from "@/src/components/ui/SimulationCard";
+import SimulationCard from "@/src/components/ui/SimulationCard";
 import { useAuth } from "@/src/context/AuthContext";
+import { simulations } from "@/src/data/simulations";
 import { Redirect } from "expo-router";
-import React, { useState } from "react";
+import React from "react";
 import { ScrollView, StyleSheet, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -14,22 +15,8 @@ const TEST_STUDENT_USER = {
 
 export default function StudentDashboard() {
   const { user, role, loading: authLoading } = useAuth();
-  // const [simulations, setSimulations] = useState<any[]>(sampleSimulations || []);
-  // const [loading, setLoading] = useState(true);
-
   const currentUser = user || TEST_STUDENT_USER;
   const currentRole = role || TEST_STUDENT_USER.role;
-  const [simulations] = useState(sampleSimulations);
-  // useEffect(() => {
-  //   if (!currentUser) return;
-
-  //   setSimulations(sampleSimulations);
-  //   setLoading(false);
-
-  //   // getStudentSimulations(user.uid)
-  //   //   .then(setSimulations)
-  //   //   .finally(() => setLoading(false));
-  // }, [currentUser]);
 
   if (!currentUser) return null;
   if (authLoading) return null;
@@ -37,9 +24,9 @@ export default function StudentDashboard() {
     return <Redirect href="/(auth)/login" />;
   }
 
-  // if (loading) {
-  //   return <Text>Loading simulations...</Text>;
-  // }
+  const studentSims = simulations.filter(
+    (sim) => sim.assignedTo === "student" || sim.assignedTo === "all"
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -50,15 +37,8 @@ export default function StudentDashboard() {
         {!simulations || simulations.length === 0 ? (
           <Text>No simulations available.</Text>
         ) : (
-          simulations.map((sim) => (
-            <SimulationCard
-              key={sim.id}
-              title={sim.title}
-              description={sim.description}
-              locked={sim.locked}
-              details={sim.details}
-              onPress={() => console.log("Clicked simulation:", sim.id)}
-            />
+          studentSims.map((sim) => (
+            <SimulationCard key={sim.id} id={sim.id} title={sim.title} description={sim.description} assignedTo={sim.assignedTo} locked={sim.locked}/>
           ))
         )}
       </ScrollView>
@@ -70,18 +50,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 16,
-    backgroundColor: "pink",
+    backgroundColor: "#f2f2f2",
   },
   title: {
-    fontSize: 36,
+    fontSize: 48,
     fontWeight: "700",
-    marginVertical: 12,
+    marginTop: 48,
   },
   subtitle: {
     fontSize: 24,
-    fontWeight: "500",
-    color: "green",
+    fontWeight: "600",
+    color: "black",
     marginBottom: 12,
+    marginTop: 24,
   },
   scrollContainer: {
     paddingBottom: 20,
