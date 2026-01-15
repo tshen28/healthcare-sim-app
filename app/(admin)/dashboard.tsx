@@ -51,18 +51,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 16,
-    backgroundColor: "pink",
+    backgroundColor: "#f2f2f2",
   },
   title: {
-    fontSize: 36,
+    fontSize: 48,
     fontWeight: "700",
-    marginVertical: 12,
+    marginTop: 48,
   },
   subtitle: {
     fontSize: 24,
-    fontWeight: "500",
-    color: "green",
+    fontWeight: "600",
+    color: "black",
     marginBottom: 12,
+    marginTop: 24,
   },
   scrollContainer: {
     paddingBottom: 20,

@@ -1,6 +1,6 @@
 import { simulations } from "@/src/data/simulations";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 interface Props {
@@ -11,7 +11,6 @@ export default function SimulationDetails({ role }: Props) {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const simulation = simulations.find((s) => s.id === id);
-  console.log("Simulation details:", simulation);
 
   if (!simulation) {
     return (
@@ -40,7 +39,6 @@ export default function SimulationDetails({ role }: Props) {
 
   return (
     <View style={styles.container}>
-      <Stack.Screen options={{ title: simulation.title }} />
       <Text style={styles.title}>{simulation.title}</Text>
       <ScrollView>
         <Section label="CBC" value={simulation.cbc} />
@@ -93,6 +91,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 12,
     color: "black",
+    fontWeight: "600",
+    textDecorationLine: "underline",
   },
   value: {
     color: "black",

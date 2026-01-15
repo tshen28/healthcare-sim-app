@@ -67,32 +67,6 @@ const styles = StyleSheet.create({
     fontSize: 36,
     color: "black",
   },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalContent: {
-    backgroundColor: "white",
-    width: "90%",
-    maxHeight: "80%",
-    borderRadius: 12,
-    padding: 16,
-  },
-  modalTitle: {
-    fontWeight: "700",
-    fontSize: 18,
-    marginBottom: 8,
-  },
-  modalDescription: {
-    fontSize: 16,
-    marginBottom: 8,
-  },
-  modalDetails: {
-    fontSize: 14,
-    color: "grey",
-  },
   closeButton: {
     marginTop: 12,
     backgroundColor: "grey",
