@@ -4,7 +4,7 @@ import { enableScreens } from "react-native-screens";
 
 enableScreens(true);
 
-export default function AdminLayout() {
+export default function AuthLayout() {
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <Stack 

@@ -1,5 +1,6 @@
+// @ts-ignore: AsyncStorage for persistence
 import { getApp, getApps, initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { Auth, getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const EXPO_PUBLIC_FIREBASE_API_KEY = process.env.EXPO_PUBLIC_FIREBASE_API_KEY;
@@ -28,5 +29,6 @@ const app = getApps().length
   ? getApp()
   : initializeApp(firebaseConfig);
 
-export const auth = getAuth(app);
+// Initialize auth - use getAuth which works with all versions
+export const auth: Auth = getAuth(app);
 export const db = getFirestore(app);

@@ -7,16 +7,10 @@ import React from "react";
 import { ScrollView, StyleSheet, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const TEST_STUDENT_USER = {
-  uid: "TEST_STUDENT_UID",
-  email: "student@test.com",
-  role: "student" as const,
-};
-
 export default function StudentDashboard() {
   const { user, role, loading: authLoading } = useAuth();
-  const currentUser = user || TEST_STUDENT_USER;
-  const currentRole = role || TEST_STUDENT_USER.role;
+  const currentUser = user;
+  const currentRole = role;
 
   if (!currentUser) return null;
   if (authLoading) return null;

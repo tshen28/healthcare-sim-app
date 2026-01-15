@@ -29,7 +29,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+    
+    // Set a timeout to prevent infinite loading
+    const timeout = setTimeout(() => {
+      if (isMounted && loading) {
+        console.warn('Auth initialization timeout - setting loading to false');
+        setLoading(false);
+      }
+    }, 5000);
+
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (!isMounted) return;
+      
+      clearTimeout(timeout);
+      
       if (!firebaseUser) {
         setUser(null);
         setRole(null);
@@ -39,20 +53,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       setUser(firebaseUser);
 
-      const userDocRef = doc(db, "users", firebaseUser.uid);
-      const userDoc = await getDoc(userDocRef);
+      try {
+        const userDocRef = doc(db, "users", firebaseUser.uid);
+        const userDoc = await getDoc(userDocRef);
 
-      if (userDoc.exists()) {
-        setRole(userDoc.data().role);
-      } else {
+        if (userDoc.exists()) {
+          setRole(userDoc.data().role);
+        } else {
+          setRole("student");
+        }
+      } catch (error) {
+        console.warn('Error fetching user role:', error);
+        // Default to student role if there's an error fetching from Firestore
         setRole("student");
       }
 
-      setLoading(false);
+      if (isMounted) {
+        setLoading(false);
+      }
     });
 
-    return unsubscribe;
-  }, []);
+    return () => {
+      isMounted = false;
+      clearTimeout(timeout);
+      unsubscribe();
+    };
+  }, [loading]);
 
   return (
     <AuthContext.Provider value={{ user, role, loading }}>
