@@ -1,49 +1,35 @@
 import { auth, db } from "@/src/services/firebase";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
+// Define what data the context will provide
 type UserRole = "admin" | "student" | null;
 
 export interface AuthContextType {
-  user: User | null;
-  role: UserRole;
-  loading: boolean;
-};
+  user: User | null;      // Firebase user object
+  role: UserRole;         // User's role from Firestore
+  loading: boolean;       // True while checking auth state
+}
 
+// Create the context with default values
 const AuthContext = createContext<AuthContextType>({
   user: null,
   role: null,
   loading: true,
 });
 
+// The provider component that will wrap your app
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<UserRole>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let isMounted = true;
-    
-    // Set a timeout to prevent infinite loading
-    const timeout = setTimeout(() => {
-      if (isMounted && loading) {
-        console.warn('Auth initialization timeout - setting loading to false');
-        setLoading(false);
-      }
-    }, 5000);
-
+    // This listener fires whenever auth state changes (login/logout)
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (!isMounted) return;
       
-      clearTimeout(timeout);
-      
+      // If no user is logged in
       if (!firebaseUser) {
         setUser(null);
         setRole(null);
@@ -51,34 +37,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
 
+      // User is logged in - set the user
       setUser(firebaseUser);
 
+      // Fetch the user's role from Firestore
       try {
         const userDocRef = doc(db, "users", firebaseUser.uid);
         const userDoc = await getDoc(userDocRef);
 
         if (userDoc.exists()) {
-          setRole(userDoc.data().role);
+          const userData = userDoc.data();
+          setRole(userData.role || "student"); // Default to student if no role
         } else {
-          setRole("student");
+          setRole("student"); // Default if document doesn't exist
         }
       } catch (error) {
-        console.warn('Error fetching user role:', error);
-        // Default to student role if there's an error fetching from Firestore
-        setRole("student");
+        console.error("Error fetching user role:", error);
+        setRole("student"); // Default on error
       }
 
-      if (isMounted) {
-        setLoading(false);
-      }
+      setLoading(false);
     });
 
-    return () => {
-      isMounted = false;
-      clearTimeout(timeout);
-      unsubscribe();
-    };
-  }, [loading]);
+    // Cleanup: unsubscribe when component unmounts
+    return () => unsubscribe();
+  }, []); // Empty dependency array = run once on mount
 
   return (
     <AuthContext.Provider value={{ user, role, loading }}>
@@ -87,4 +70,5 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// Custom hook to use the auth context in other components
 export const useAuth = () => useContext(AuthContext);

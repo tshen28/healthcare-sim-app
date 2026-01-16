@@ -7,17 +7,10 @@ import React from "react";
 import { ScrollView, StyleSheet, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const TEST_ADMIN_USER = {
-  email: "admin@test.com",
-  password: "test1234",
-  uid: "TEST_ADMIN_UID",
-  role: "admin" as const,
-};
-
 export default function AdminLayout() {
   const { user, role, loading: authLoading } = useAuth();
-  const currentUser = user || TEST_ADMIN_USER;
-  const currentRole = role || TEST_ADMIN_USER.role;
+  const currentUser = user;
+  const currentRole = role;
 
   if (!currentUser) return null;
   if (authLoading) return null;

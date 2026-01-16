@@ -1,7 +1,8 @@
 // @ts-ignore: AsyncStorage for persistence
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { getApp, getApps, initializeApp } from "firebase/app";
-import { Auth, getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getReactNativePersistence, initializeAuth } from "firebase/auth";
+import { initializeFirestore } from "firebase/firestore";
 
 const EXPO_PUBLIC_FIREBASE_API_KEY = process.env.EXPO_PUBLIC_FIREBASE_API_KEY;
 const EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN =
@@ -29,6 +30,13 @@ const app = getApps().length
   ? getApp()
   : initializeApp(firebaseConfig);
 
-// Initialize auth - use getAuth which works with all versions
-export const auth: Auth = getAuth(app);
-export const db = getFirestore(app);
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+});
+
+// Initialize Firestore with React Native compatibility
+const db = initializeFirestore(app, {
+  experimentalForceLongPolling: true, // Required for React Native/Expo
+});
+
+export { auth, db };

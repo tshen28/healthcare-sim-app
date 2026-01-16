@@ -16,35 +16,25 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { user, role, loading: authLoading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    console.log('Login screen - Auth state:', { user: !!user, role, authLoading });
-    if (!authLoading && user && role) {
-      console.log('Redirecting to dashboard for role:', role);
-      if (role === "admin") {
-        router.replace("/(admin)/dashboard");
-      } else if (role === "student") {
-        router.replace("/(student)/dashboard");
-      }
-    }
-  }, [user, role, authLoading]);
-
   const handleLogin = async () => {
+    // Basic validation
     if (!email || !password) {
-      Alert.alert("Error", "Please enter email and password");
+      Alert.alert("Error", "Please enter both email and password");
       return;
     }
 
+    setLoading(true);
     try {
-      setLoading(true);
+      // Call our login function from auth.service
       await login(email, password);
-      // Navigation will happen via useEffect when auth state updates
+      // AuthContext will automatically detect the login and update state
+      // No need to manually navigate - we'll handle that in index.tsx
     } catch (error: any) {
-      Alert.alert("Login failed", error.message)
+      Alert.alert("Login Failed", error.message || "Invalid credentials");
     } finally {
       setLoading(false);
     }

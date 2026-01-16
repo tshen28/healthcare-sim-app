@@ -19,8 +19,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SignupScreen() {
   const router = useRouter();
-  const { user, role: userRole, loading: authLoading } = useAuth();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -28,24 +26,15 @@ export default function SignupScreen() {
   const [role, setRole] = useState<"admin" | "student" | null>(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (!authLoading && user && userRole) {
-      if (userRole === "admin") {
-        router.replace("/(admin)/dashboard");
-      } else if (userRole === "student") {
-        router.replace("/(student)/dashboard");
-      }
-    }
-  }, [user, userRole, authLoading, router]);
-
   const handleSignup = async () => {
+    // Validation
     if (!role) {
       Alert.alert("Error", "Please select a role");
       return;
     }
 
     if (!email || !password) {
-      Alert.alert("Error", "Please fill in all required fields");
+      Alert.alert("Error", "Please enter email and password");
       return;
     }
 
@@ -55,16 +44,18 @@ export default function SignupScreen() {
     }
 
     if (password.length < 6) {
-      Alert.alert("Error", "Password must be at least 6 characters long");
+      Alert.alert("Error", "Password must be at least 6 characters");
       return;
     }
 
     setLoading(true);
-
     try {
-      await signup(role, email, password, displayName || undefined);
+      // Call our signup function from auth.service
+      await signup(email, password, role);
+      // AuthContext will detect the new user and fetch their role
+      Alert.alert("Success", "Account created successfully!");
     } catch (error: any) {
-      Alert.alert("Signup failed", error.message);
+      Alert.alert("Signup Failed", error.message || "Could not create account");
     } finally {
       setLoading(false);
     }
@@ -159,7 +150,7 @@ export default function SignupScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "#fff",
   },
   keyboardView: {
     flex: 1,
