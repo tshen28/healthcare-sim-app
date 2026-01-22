@@ -11,6 +11,8 @@ export default function AdminLayout() {
         screenOptions={{
           headerShown: false,
           gestureEnabled: false,
+          animation: "fade",
+          animationDuration: 400,
         }}
       />
     </KeyboardAvoidingView>

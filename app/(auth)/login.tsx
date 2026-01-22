@@ -20,29 +20,44 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    console.log("Login redirect effect - user:", user?.email, "role:", role);
     if (user) {
       // Redirect based on role
       if (role === "admin") {
+        console.log("Redirecting to admin dashboard");
         router.replace("/(admin)/dashboard");
       } else if (role === "student") {
+        console.log("Redirecting to student dashboard");
         router.replace("/(student)/dashboard");
+      } else {
+        console.log("User logged in but no valid role found:", role);
       }
     }
   }, [user, role, router]);
 
   const handleLogin = async () => {
+    console.log("Login attempt started");
+    console.log("Email:", email);
+
     if (!email || !password) {
+      console.log("Validation failed: Missing email or password");
       Alert.alert("Error", "Please enter email and password");
       return;
     }
 
     setLoading(true);
     try {
+      console.log("Calling authLogin...");
       await authLogin(email, password);
+      console.log("Login successful");
     } catch (error: any) {
+      console.error("Login error:", error);
+      console.error("Error code:", error.code);
+      console.error("Error message:", error.message);
       Alert.alert("Login Failed", error.message || "An error occurred");
     } finally {
       setLoading(false);
+      console.log("Login process completed");
     }
   };
 
