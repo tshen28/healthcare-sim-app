@@ -1,4 +1,5 @@
 import EvilIcons from "@expo/vector-icons/EvilIcons";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { useRouter } from "expo-router";
 import React from "react";
 import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
@@ -9,6 +10,9 @@ interface Props {
   description: string;
   assignedTo?: string;
   locked?: boolean;
+  isAdmin?: boolean;
+  onEdit?: (id: string) => void;
+  onToggleLock?: (id: string, locked: boolean) => void;
 }
 
 export default function SimulationCard({
@@ -17,26 +21,56 @@ export default function SimulationCard({
   description,
   assignedTo,
   locked,
+  isAdmin = false,
+  onEdit,
+  onToggleLock,
 }: Props) {
   const router = useRouter();
 
   const handlePress = () => {
-    if (locked) {
+    if (locked && !isAdmin) {
       Alert.alert("This simulation is locked");
     } else {
       router.push(`/simulation/${id}?assignedTo=${assignedTo}`);
     }
   };
 
+  const handleEdit = (e: any) => {
+    e.stopPropagation();
+    onEdit?.(id);
+  };
+
+  const handleToggleLock = (e: any) => {
+    e.stopPropagation();
+    onToggleLock?.(id, !locked);
+  };
+
   return (
     <View>
       <Pressable
-        style={[styles.card, locked && styles.locked]}
+        style={[styles.card, locked && !isAdmin && styles.locked]}
         onPress={handlePress}
       >
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.description}>{description}</Text>
-        {locked && <EvilIcons name="lock" style={styles.lockIcon}></EvilIcons>}
+        {locked && !isAdmin && (
+          <EvilIcons name="lock" style={styles.lockIcon}></EvilIcons>
+        )}
+
+        {isAdmin && (
+          <View style={styles.adminControls}>
+            <Pressable style={styles.iconButton} onPress={handleEdit}>
+              <FontAwesome5 name="pen" style={styles.penIcon} />
+            </Pressable>
+            <Pressable style={styles.iconButton} onPress={handleToggleLock}>
+              <EvilIcons
+                name={locked ? "lock" : "unlock"}
+                size={36}
+                color={locked ? "grey" : "black"}
+              />
+            </Pressable>
+          </View>
+        )}
       </Pressable>
     </View>
   );
@@ -54,6 +88,7 @@ const styles = StyleSheet.create({
     elevation: 3,
     borderColor: "black",
     borderWidth: 2,
+    marginTop: 2,
   },
   locked: {
     opacity: 0.7,
@@ -66,12 +101,29 @@ const styles = StyleSheet.create({
   description: {
     color: "black",
   },
+  penIcon: {
+    position: "absolute",
+    right: -5,
+    top: "35%",
+    fontSize: 20,
+    color: "black",
+  },
   lockIcon: {
     position: "absolute",
     right: 16,
     top: "50%",
     fontSize: 36,
     color: "black",
+  },
+  adminControls: {
+    position: "absolute",
+    right: 12,
+    top: 12,
+    flexDirection: "row",
+    gap: 8,
+  },
+  iconButton: {
+    padding: 4,
   },
   closeButton: {
     marginTop: 12,

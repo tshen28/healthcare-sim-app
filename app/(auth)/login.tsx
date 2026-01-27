@@ -64,7 +64,7 @@ export default function LoginScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <FontAwesome name="heartbeat" style={styles.icon} />
-      <Text style={styles.title}>Harborview Project</Text>
+      <Text style={styles.title}>SU Project</Text>
 
       <Text style={styles.subtitle}>Log in</Text>
       <TextInput

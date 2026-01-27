@@ -14,6 +14,7 @@ import {
     useState,
 } from "react";
 import { auth, db } from "../services/firebase";
+import { initializeSimulations } from "../services/initializeSimulations";
 
 type UserRole = "admin" | "student" | null;
 
@@ -39,6 +40,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<UserRole>(null);
   const [loading, setLoading] = useState<boolean>(true);
+
+  // Initialize simulations in Firestore on app load
+  useEffect(() => {
+    console.log("🚀 Initializing simulations in Firestore...");
+    initializeSimulations();
+  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {

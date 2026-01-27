@@ -2,16 +2,29 @@
 import DashboardHeader from "@/src/components/ui/DashboardHeader";
 import SimulationCard from "@/src/components/ui/SimulationCard";
 import { useAuth } from "@/src/context/AuthContext";
-import { simulations } from "@/src/data/simulations";
+import { subscribeToSimulations } from "@/src/services/adminService";
 import { Redirect } from "expo-router";
-import React from "react";
-import { ScrollView, StyleSheet, Text } from "react-native";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, ScrollView, StyleSheet, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function StudentDashboard() {
   const { user, role, loading: authLoading } = useAuth();
   const currentUser = user;
   const currentRole = role;
+
+  const [simulations, setSimulations] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Subscribe to Firestore simulations
+  useEffect(() => {
+    const unsubscribe = subscribeToSimulations((sims) => {
+      setSimulations(sims);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   if (!currentUser) return null;
   if (authLoading) return null;
@@ -29,7 +42,9 @@ export default function StudentDashboard() {
       <Text style={styles.subtitle}>Simulations</Text>
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {!simulations || simulations.length === 0 ? (
+        {loading ? (
+          <ActivityIndicator size="large" color="#007AFF" />
+        ) : !simulations || simulations.length === 0 ? (
           <Text>No simulations available.</Text>
         ) : (
           studentSims.map((sim) => (
@@ -68,5 +83,9 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     paddingBottom: 20,
+    backgroundColor: "white",
+    padding: 16,
+    borderRadius: 30,
+    height: "100%",
   },
 });
