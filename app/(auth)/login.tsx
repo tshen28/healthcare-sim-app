@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     padding: 16,
-    backgroundColor: "white",
+    backgroundColor: "#aed581",
     alignItems: "center",
   },
   input: {
@@ -125,6 +125,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     color: "black",
     width: "60%",
+    backgroundColor: "#f1f8e9",
   },
   buttonRow: {
     flexDirection: "row",
@@ -145,7 +146,7 @@ const styles = StyleSheet.create({
   buttonText: {
     padding: 2,
     fontWeight: 600,
-    color: "white",
+    color: "#f1f8e9",
   },
   title: {
     fontSize: 28,

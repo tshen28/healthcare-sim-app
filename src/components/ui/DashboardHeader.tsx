@@ -60,20 +60,22 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontWeight: "700",
+    color: "black",
   },
   logoutButton: {
-    backgroundColor: "black",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    backgroundColor: "#f1f8e9",
+    paddingHorizontal: 15,
+    paddingVertical: 5,
     borderRadius: 30,
+    borderColor: "black",
+    borderWidth: 2,
   },
   logoutButtonPressed: {
-    backgroundColor: "#333",
-    opacity: 0.8,
+    backgroundColor: "#dcedc8",
   },
   logoutText: {
-    color: "white",
+    color: "black",
     fontWeight: "600",
-    fontSize: 16,
+    fontSize: 20,
   },
 });

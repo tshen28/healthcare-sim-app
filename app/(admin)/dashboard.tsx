@@ -1,4 +1,5 @@
 //route: "/admin/dashboard"
+import CreateSimulationModal from "@/src/components/ui/CreateSimulationModal";
 import DashboardHeader from "@/src/components/ui/DashboardHeader";
 import EditSimulationModal from "@/src/components/ui/EditSimulationModal";
 import SimulationCard from "@/src/components/ui/SimulationCard";
@@ -7,14 +8,17 @@ import {
     subscribeToSimulations,
     toggleSimulationLock,
 } from "@/src/services/adminService";
+import Entypo from "@expo/vector-icons/Entypo";
 import { Redirect } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
     ActivityIndicator,
     Alert,
+    Pressable,
     ScrollView,
     StyleSheet,
     Text,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -24,6 +28,7 @@ export default function AdminLayout() {
   const currentRole = role;
 
   const [editModalVisible, setEditModalVisible] = useState(false);
+  const [createModalVisible, setCreateModalVisible] = useState(false);
   const [selectedSimulation, setSelectedSimulation] = useState<any>(null);
   const [simulations, setSimulations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -80,10 +85,30 @@ export default function AdminLayout() {
     // In production, refresh simulation data here
   };
 
+  const handleCreateNew = () => {
+    setCreateModalVisible(true);
+  };
+
+  const handleCreateSave = () => {
+    setCreateModalVisible(false);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <DashboardHeader title="Dashboard" />
-      <Text style={styles.subtitle}>Simulations</Text>
+      <View style={styles.subtitleContainer}>
+        <Text style={styles.subtitle}>Simulations</Text>
+        <Pressable
+          style={({ pressed }) => [
+            styles.createButton,
+            pressed && styles.createButtonPressed,
+          ]}
+          onPress={handleCreateNew}
+        >
+          <Entypo name="plus" size={24} color="black" />
+          <Text style={styles.createButtonText}>Add</Text>
+        </Pressable>
+      </View>
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {loading ? (
@@ -117,6 +142,12 @@ export default function AdminLayout() {
           onSave={handleSave}
         />
       )}
+
+      <CreateSimulationModal
+        visible={createModalVisible}
+        onClose={() => setCreateModalVisible(false)}
+        onCreate={handleCreateSave}
+      />
     </SafeAreaView>
   );
 }
@@ -125,23 +156,47 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 16,
-    backgroundColor: "#f2f2f2",
+    backgroundColor: "#aed581",
   },
   title: {
     fontSize: 48,
     fontWeight: "700",
     marginTop: 48,
   },
+  subtitleContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 12,
+    marginTop: 24,
+  },
   subtitle: {
     fontSize: 24,
     fontWeight: "600",
     color: "black",
-    marginBottom: 12,
-    marginTop: 24,
+  },
+  createButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 30,
+    borderColor: "black",
+    borderWidth: 2,
+    backgroundColor: "#f1f8e9",
+  },
+  createButtonPressed: {
+    opacity: 0.6,
+  },
+  createButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "black",
   },
   scrollContainer: {
     paddingBottom: 20,
-    backgroundColor: "white",
+    backgroundColor: "#dcedc8",
     padding: 16,
     borderRadius: 30,
     height: "100%",

@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 16,
-    backgroundColor: "#f2f2f2",
+    backgroundColor: "#aed581",
   },
   title: {
     fontSize: 48,
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     paddingBottom: 20,
-    backgroundColor: "white",
+    backgroundColor: "#dcedc8",
     padding: 16,
     borderRadius: 30,
     height: "100%",

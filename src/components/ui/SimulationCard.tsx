@@ -78,7 +78,7 @@ export default function SimulationCard({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "white",
+    backgroundColor: "#f1f8e9",
     padding: 16,
     borderRadius: 30,
     marginBottom: 12,

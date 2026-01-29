@@ -1,56 +1,50 @@
-import { updateSimulation } from "@/src/services/adminService";
+import { db } from "@/src/services/firebase";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
+import { collection, doc, setDoc } from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
 import {
-  Alert,
-  Animated,
-  Modal,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
+    Alert,
+    Animated,
+    Modal,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
 } from "react-native";
 
 interface Props {
   visible: boolean;
-  simulationId: string;
-  initialTitle: string;
-  initialDescription: string;
   onClose: () => void;
-  onSave: () => void;
+  onCreate: () => void;
 }
 
-export default function EditSimulationModal({
+export default function CreateSimulationModal({
   visible,
-  simulationId,
-  initialTitle,
-  initialDescription,
   onClose,
-  onSave,
+  onCreate,
 }: Props) {
-  const [title, setTitle] = useState(initialTitle);
-  const [description, setDescription] = useState(initialDescription);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [uploading, setUploading] = useState(false);
 
   const scaleAnim = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  // Update state when modal opens with new data
+  // Reset form when modal closes
   useEffect(() => {
-    if (visible) {
-      setTitle(initialTitle);
-      setDescription(initialDescription);
+    if (!visible) {
+      setTitle("");
+      setDescription("");
     }
-  }, [visible, initialTitle, initialDescription]);
+  }, [visible]);
 
   useEffect(() => {
     if (visible) {
-      // Reset animations to 0 before starting
       scaleAnim.setValue(0);
       fadeAnim.setValue(0);
 
@@ -83,14 +77,37 @@ export default function EditSimulationModal({
     }
   }, [visible, fadeAnim, scaleAnim]);
 
-  const handleSave = async () => {
+  const handleCreate = async () => {
+    if (!title.trim()) {
+      Alert.alert("Error", "Please enter a title");
+      return;
+    }
+
     try {
-      await updateSimulation(simulationId, {
-        title,
-        description,
+      // Generate a unique ID for the new simulation
+      const simsRef = collection(db, "simulations");
+      const newSimRef = doc(simsRef);
+
+      await setDoc(newSimRef, {
+        title: title.trim(),
+        description: description.trim(),
+        locked: false,
+        assignedTo: "all",
+        cbc: "",
+        cmp: "",
+        ekg: "",
+        xr: "",
+        ct: "",
+        bloodGas: "",
+        ultrasound: "",
+        files: [],
+        images: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       });
-      Alert.alert("Success", "Simulation updated");
-      onSave();
+
+      Alert.alert("Success", "Simulation created");
+      onCreate();
     } catch (error: any) {
       Alert.alert("Error", error.message);
     }
@@ -106,7 +123,6 @@ export default function EditSimulationModal({
     if (!result.canceled) {
       setUploading(true);
       // TODO: Upload to Firebase Storage and get URL
-      // For now, just show alert
       Alert.alert("Image selected", "Upload to storage not yet implemented");
       setUploading(false);
     }
@@ -137,7 +153,7 @@ export default function EditSimulationModal({
           ]}
         >
           <View style={styles.header}>
-            <Text style={styles.headerTitle}>Edit Simulation</Text>
+            <Text style={styles.headerTitle}>New Simulation</Text>
             <Pressable onPress={onClose}>
               <MaterialIcons name="close" size={28} color="black" />
             </Pressable>
@@ -149,7 +165,7 @@ export default function EditSimulationModal({
               style={styles.input}
               value={title}
               onChangeText={setTitle}
-              placeholder="Simulation title"
+              placeholder="Simulation Title"
             />
 
             <Text style={styles.label}>Description</Text>
@@ -157,13 +173,13 @@ export default function EditSimulationModal({
               style={[styles.input, styles.textArea]}
               value={description}
               onChangeText={setDescription}
-              placeholder="Simulation description"
+              placeholder="Simulation Description"
               multiline
               numberOfLines={4}
             />
 
             <View style={styles.uploadSection}>
-              <Text style={styles.label}>Attachments</Text>
+              <Text style={styles.label}>Attachments (Optional)</Text>
               <View style={styles.uploadButtons}>
                 <Pressable
                   style={styles.uploadButton}
@@ -190,8 +206,8 @@ export default function EditSimulationModal({
             <Pressable style={styles.cancelButton} onPress={onClose}>
               <Text style={styles.cancelButtonText}>Cancel</Text>
             </Pressable>
-            <Pressable style={styles.saveButton} onPress={handleSave}>
-              <Text style={styles.saveButtonText}>Save</Text>
+            <Pressable style={styles.createButton} onPress={handleCreate}>
+              <Text style={styles.createButtonText}>Create</Text>
             </Pressable>
           </View>
         </Animated.View>
@@ -247,6 +263,7 @@ const styles = StyleSheet.create({
     height: 100,
     textAlignVertical: "top",
     backgroundColor: "#f1f8e9",
+    color: "black",
   },
   uploadSection: {
     marginTop: 20,
@@ -254,26 +271,26 @@ const styles = StyleSheet.create({
   uploadButtons: {
     flexDirection: "row",
     gap: 12,
-    marginTop: 8,
   },
   uploadButton: {
     flex: 1,
     backgroundColor: "black",
+    padding: 12,
+    borderRadius: 30,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    padding: 12,
-    borderRadius: 30,
     gap: 8,
   },
   uploadButtonText: {
     color: "white",
     fontWeight: "600",
+    fontSize: 14,
   },
   footer: {
     flexDirection: "row",
-    gap: 12,
     padding: 20,
+    gap: 12,
     borderTopWidth: 1,
     borderTopColor: "black",
   },
@@ -286,17 +303,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   cancelButtonText: {
+    fontSize: 16,
     fontWeight: "600",
+    color: "black",
   },
-  saveButton: {
+  createButton: {
     flex: 1,
-    backgroundColor: "black",
     padding: 12,
     borderRadius: 30,
+    backgroundColor: "black",
     alignItems: "center",
   },
-  saveButtonText: {
-    color: "white",
+  createButtonText: {
+    fontSize: 16,
     fontWeight: "600",
+    color: "white",
   },
 });
