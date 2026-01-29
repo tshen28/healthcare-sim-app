@@ -40,7 +40,7 @@ export const simulations = [
     ct: "Left MCA infarct",
     bloodGas: "Normal",
     ultrasound: "Carotid stenosis 70%",
-    assignedTo: "admin",
+    assignedTo: "all",
   },
   {
     id: "3",

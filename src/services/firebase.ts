@@ -2,6 +2,7 @@ import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { getApp, getApps, initializeApp } from "firebase/app";
 import { getReactNativePersistence, initializeAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 const EXPO_PUBLIC_FIREBASE_API_KEY = process.env.EXPO_PUBLIC_FIREBASE_API_KEY;
 const EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN =
@@ -33,3 +34,10 @@ export const auth = initializeAuth(app, {
 });
 
 export const db = getFirestore(app);
+
+// Initialize storage
+console.log("Initializing Firebase Storage...");
+console.log("Storage Bucket:", EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET);
+console.log("Firebase Config:", firebaseConfig);
+
+export const storage = getStorage(app);
